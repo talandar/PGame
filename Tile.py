@@ -18,3 +18,5 @@ grass1 = Tile(Image_Store.forest_bg_tiles.get_sprite(6, 2), True)
 grass2 = Tile(Image_Store.forest_bg_tiles.get_sprite(7, 2), True)
 grass3 = Tile(Image_Store.forest_bg_tiles.get_sprite(8, 2), True)
 grass = [grass0, grass1, grass2, grass3]
+
+dirt = Tile(Image_Store.forest_bg_tiles.get_sprite(1, 1), True)
