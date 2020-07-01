@@ -1,8 +1,11 @@
 import sys
-import pygame
 import math
-import Tile
-import Input_Manager
+
+import pygame
+
+import map.tile as tiles
+import input_manager
+import map.zone as zone
 
 pygame.init()
 Clock = pygame.time.Clock()
@@ -16,38 +19,33 @@ black = 0, 0, 0
 screen = pygame.display.set_mode(size)
 
 print('found ', pygame.joystick.get_count(), 'joystick(s)')
-input_manager = Input_Manager.manager
+input_manager = input_manager.manager
 
-map = []
-for x in range(20):
-    column = []
-    for y in range(15):
-        column.append(Tile.randGrass())
-    map.append(column)
+current_zone = zone.Zone(None)
 
-player_pos = player_x, player_y = 0, 0
+
+player_pos = player_x, player_y = 64, 64
 
 while 1:
-    last_frame_mil = Clock.tick(60)
+    last_frame_mil = Clock.tick(target_framerate)
+    global_timer = pygame.time.get_ticks()
     input_manager.update_keys()
 
     if input_manager.MOV_RIGHT:
-        player_x = player_x + 1
+        player_x = player_x + 2
     if input_manager.MOV_DOWN:
-        player_y = player_y + 1
+        player_y = player_y + 2
     if input_manager.MOV_UP:
-        player_y = player_y - 1
+        player_y = player_y - 2
     if input_manager.MOV_LEFT:
-        player_x = player_x - 1
+        player_x = player_x - 2
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
 
     screen.fill(black)
-    for x in range(20):
-        for y in range(15):
-            screen.blit(map[x][y].surface, (32*x, 32*y))
+    current_zone.draw(screen, 0, 0, global_timer)
 
-    screen.blit(Tile.dirt.surface, (player_x, player_y))
+    tiles.forest_tiles.dirt.draw(player_x, player_y, tiles.Tile_Meta(0, 0, 0), screen)
     pygame.display.flip()
