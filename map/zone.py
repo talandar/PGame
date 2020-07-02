@@ -1,5 +1,7 @@
 import random
 
+import pygame
+
 import map.tile as tiles
 
 
@@ -9,6 +11,8 @@ class Zone(object):
         self._map = []
         self._all_tiles = []
         self._unwalkable = []
+        self._zone_x_offset = 0
+        self._zone_y_offset = 0
 
         self._load_map(zone_data)
         for column in self._map:
@@ -41,4 +45,13 @@ class Zone(object):
     def draw(self, screen, x_offset, y_offset, animation_timer):
         for x in range(20):
             for y in range(15):
-                self._map[x][y][0].draw(32*x+x_offset, 32*y+y_offset, self._map[x][y][1], screen)
+                self._map[x][y][0].draw(self._zone_x_offset + x_offset,
+                                        self._zone_y_offset + y_offset,
+                                        self._map[x][y][1],  # meta
+                                        screen)
+
+    def get_unwalkable_rects(self):
+        rects = []
+        for tile_meta in self._unwalkable:
+            rects.append(pygame.rect.Rect((16*tile_meta.map_x, 16*tile_meta.map_y), (16, 16)))
+        return rects

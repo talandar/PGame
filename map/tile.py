@@ -16,11 +16,14 @@ class Simple_Tile(object):
         self._surfaces = image_surfaces
         self.walkable = walkable
 
-    def draw(self, x_offset, y_offset, meta, dest_surface):
-        dest_surface.blit(self._surfaces[meta.variant], (x_offset, y_offset))
+    def draw(self, level_x_offset, level_y_offset, meta, dest_surface):
+        dest_surface.blit(self._surfaces[meta.variant], self.calculate_offset(meta, level_x_offset, level_y_offset))
 
     def count_variants(self):
         return len(self._surfaces)
+
+    def calculate_offset(self, meta, level_x, level_y):
+        return ((16 * meta.map_x) + level_x, (16 * meta.map_y) + level_y)
 
 
 class Layered_Tile(Simple_Tile):
@@ -29,12 +32,12 @@ class Layered_Tile(Simple_Tile):
         self.walkable = walkable
         self._surface_layers = surface_layers
 
-    def draw(self, x_offset, y_offset, meta, dest_surface):
+    def draw(self, level_x_offset, level_y_offset, meta, dest_surface):
         variant_remainder = meta.variant
         for layer_surfaces in self._surface_layers:
             selector = variant_remainder % len(layer_surfaces)
             variant_remainder = math.floor((variant_remainder - selector) / len(layer_surfaces))
-            dest_surface.blit(layer_surfaces[selector], (x_offset, y_offset))
+            dest_surface.blit(layer_surfaces[selector], self.calculate_offset(meta, level_x_offset, level_y_offset))
 
     def count_variants(self):
         count = 1
